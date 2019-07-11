@@ -9,6 +9,7 @@ class index:
     def __init__(self, path):
         self.path = path
         self.index = {}
+        self.token_freq = {}
         self.buildIndex()
 
     def buildIndex(self):
@@ -17,19 +18,19 @@ class index:
         # function to read documents from collection, tokenize and build the index with tokens
         # index should also contain positional information of the terms in the document --- term: [(ID1,[pos1,pos2,..]), (ID2, [pos1,pos2,…]),….]
         # use unique document IDs
+        print('Building index')
         files = os.scandir(self.path)
         count = 0
         for doc_file in files:
             docID = doc_file.name
+            print('Indexing : ', docID)
             doc_index = self.build_inverted_index_for_doc(doc_file)
             self._add_doc_index_to_dir_index(docID, doc_index)
-            count =+ 1
-            if count == 1:
-                break
-        print(self.index)
+        print('Index built')
     
     def _add_doc_index_to_dir_index(self, docID, doc_index):
         '''Add the index of a document to the index of all the documents.
+        Also build a frequency counter for the terms
         
         :param docID: Unique ID for a given document.
         :type docID: String
@@ -45,6 +46,10 @@ class index:
                 self.index[token] = [
                     (docID, doc_index[token])
                 ]
+            if token in self.token_freq:
+                self.token_freq[token] += 1
+            else:
+                self.token_freq[token] = 1
     
     def build_inverted_index_for_doc(self, doc):
         '''Build an index for a given file.
@@ -99,7 +104,10 @@ class index:
 
     def print_dict(self):
         # function to print the terms and posting list in the index
-        pass
+        for token in self.index:
+            print('Token : ', token)
+            for posting in self.index[token]:
+                print('\t', posting[0], ' : ', posting[1])
 
     def print_doc_list(self):
         # function to print the documents and their document id
@@ -107,3 +115,4 @@ class index:
 
 if __name__ == '__main__':
     indexer = index('./collection/')
+    indexer.print_dict()
