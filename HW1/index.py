@@ -149,7 +149,7 @@ class index:
         doc_set = self._get_docs_for_term(sorted_terms[0][1])
         for term in sorted_terms[1:]:
             term_doc = self._get_docs_for_term(term[1])
-            doc_set.intersection(term_doc)
+            doc_set = doc_set.intersection(term_doc)
         print('The documents are : ')
         for doc in doc_set:
             print(doc)
@@ -208,7 +208,7 @@ class index:
         :rtype: List of strings
         '''
         query = query.lower()
-        query = query.replace('and', '')
+        query = query.replace(' and ', ' ')
         query = query.split()
         return query
 
