@@ -196,6 +196,7 @@ class index:
                 query_term_freq.append((freq, term))
             else:
                 print(term, ' not in index. Try again.')
+                assert False
         return query_term_freq
     
     def _clean_query(self, query):
