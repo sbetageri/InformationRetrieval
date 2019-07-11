@@ -1,0 +1,52 @@
+## Building Index
+
+Time Taken to index :  1.4033172130584717
+
+## Query 1
+
+Enter the boolean AND query : hello and world
+The query is :  hello and world
+The documents are :
+Text-098.txt
+Time taken to retrieve documents :  0.00026297569274902344
+
+## Query 2
+
+Enter the boolean AND query : help and grand
+The query is :  help and grand
+The documents are :
+Text-284.txt
+Time taken to retrieve documents :  0.00035309791564941406
+
+## Query 3
+
+Enter the boolean AND query : with and without and yemen
+The query is :  with and without and yemen
+The documents are :
+Text-099.txt
+Text-159.txt
+Text-121.txt
+Text-086.txt
+Text-117.txt
+Text-115.txt
+Time taken to retrieve documents :  0.0006759166717529297
+
+## Query 4
+
+Enter the boolean AND query : with and without and yemen and yemeni
+The query is :  with and without and yemen and yemeni
+The documents are :
+Text-121.txt
+Text-099.txt
+Time taken to retrieve documents :  0.0005741119384765625
+
+## Query 5
+
+Enter the boolean AND query : bitterly and help
+The query is :  bitterly and help
+The documents are :
+Text-340.txt
+Text-349.txt
+Text-121.txt
+Text-343.txt
+Time taken to retrieve documents :  0.0002777576446533203
