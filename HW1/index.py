@@ -28,7 +28,8 @@ class index:
         files = os.scandir(self.path)
         count = 0
         for doc_file in files:
-            docID = doc_file.name
+            count += 1
+            docID = count
 
             if docID not in self.doc_list:
                 self.doc_list[docID] = (doc_file.path, doc_file.name)
@@ -146,13 +147,28 @@ class index:
         sorted_terms = sorted(query_term_freq, key=lambda freq : freq[0])
 
         # Avoid MAGIC NUMBERS below.
-        doc_set = self._get_docs_for_term(sorted_terms[0][1])
+        doc_res_list = self._get_docs_for_term(sorted_terms[0][1])
         for term in sorted_terms[1:]:
             term_doc = self._get_docs_for_term(term[1])
-            doc_set = doc_set.intersection(term_doc)
+            doc_res_list = self._merge_list(doc_res_list, term_doc)
         print('The documents are : ')
-        for doc in doc_set:
-            print(doc)
+        for doc in doc_res_list:
+            print(self.doc_list[doc][1])
+    
+    def _merge_list(self, list_a, list_b):
+        answer = []
+        l1 = 0
+        l2 = 0
+        while l1 < len(list_a) and l2 < len(list_b):
+            if list_a[l1] == list_b[l2]:
+                answer.append(list_a[l1])
+                l1 += 1
+                l2 += 1
+            elif list_a[l1] < list_b[l2]:
+                l1 += 1
+            else:
+                l2 += 1
+        return answer
     
     def _get_docs_for_term(self, term):
         '''Get a set of document IDs where the term appears.
@@ -163,9 +179,9 @@ class index:
         :rtype: Set
         '''
         postings = self.index[term]
-        docs = set()
+        docs = []
         for posting in postings:
-            docs.add(posting[0])
+            docs.append(posting[0])
         return docs
     
     def _get_term_freq(self, query):
