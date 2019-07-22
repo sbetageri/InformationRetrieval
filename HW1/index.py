@@ -146,7 +146,7 @@ class index:
         query_term_freq = self._get_term_freq(query)
         sorted_terms = sorted(query_term_freq, key=lambda freq : freq[0])
 
-        # Avoid MAGIC NUMBERS below.
+        # Merging multiple lists
         doc_res_list = self._get_docs_for_term(sorted_terms[0][1])
         for term in sorted_terms[1:]:
             term_doc = self._get_docs_for_term(term[1])
