@@ -3,3 +3,4 @@ HW1/collection/*
 *.swp
 */__pycache__/*
 *.ipynb_checkpoints
+*.zip
