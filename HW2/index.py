@@ -20,25 +20,70 @@ class index:
         self.num_terms = len(self.terms)
         self.term_idx_map = self.build_term_index_mapping()
         self.doc_vec = self.build_vector_space()
-
         self.DOC_MAG = 'magnitude'
         self.DOC_VEC = 'vector'
 
     def build_query_vector(self, query_terms):
+        '''Builds vector representation of given query
+        
+        :param query_terms: Terms in the query
+        :type query_terms: List of strings
+        :return: Vector representation of the query
+        :rtype: List of floats
+        '''
         for i, word in enumerate(query_terms):
             query_terms[i] = self._tokenize(word)
 
         query_vec = [0] * self.num_terms
-        ## TODO build this
+        for term in query_terms:
+            idx = self.term_idx_map[term]
+            query_vec[idx] += 1
+        
+        magnitude = 0
+        for term in query_terms:
+            idx = self.term_idx_map[term]
+            idf = self._idf(term)
+            val = math.log10(1 + qyery_vec[idx]) * idf
+            magnitude += val ** 2
+            query_vec[idx] = val
+        magnitude = math.sqrt(magnitude)
+        return query_vec, magnitude
 
     def build_term_index_mapping(self):
+        '''Maps given term to it's position on vector
+        
+        :return: Index of term in vector
+        :rtype: int
+        '''
         ## Builds a mapping of terms to their indexes.
         term_idx_map = {
             k:v for v, k in enumerate(self.terms)
         }
         return term_idx_map
+    
+    def _idf(self, term):
+        '''Obtain the Inter-Document Frequency of the given term
+        
+        :param term: Term
+        :type term: string
+        :return: IDF value of given term
+        :rtype: float
+        '''
+        return self.index[term][0]
 
     def build_vector_space(self):
+        '''Build vector representations of all the documents
+        The vector representation is 
+        {
+            doc_id_1(int) : {
+                self.DOC_MAG(magnitude) : magnitude of vector,
+                self.DOC_VEC(vector) : document vector
+            }
+        }
+        
+        :return: Vector Space of docs
+        :rtype: Dictionary
+        '''
         doc_vec_mapping = {}
         for doc in self.doc_list:
             doc_file = open(self.doc_list[doc][0], 'r')
@@ -63,14 +108,14 @@ class index:
             for term in self.index:
                 idx = self.term_idx_map[term]
                 tf = doc_vec[idx]
-                doc_vec[idx] = math.log10(1 + tf) * self.index[term][0]
+                doc_vec[idx] = math.log10(1 + tf) * self._idf(term)
                 magnitude += doc_vec[idx] ** 2
 
             magnitude = math.sqrt(magnitude)
 
             doc_vec_mapping[doc] = {
-                self.DOC_MAG = magnitude,
-                self.DOC_VEC = doc_vec
+                self.DOC_MAG : magnitude, 
+                self.DOC_VEC : doc_vec
             }
         return doc_vec_mapping
 
@@ -106,6 +151,13 @@ class index:
         self.index = new_index
 
     def build_stop_words_list(self, stop_words_path):
+        '''Build stop words list
+        
+        :param stop_words_path: Path to stop words file
+        :type stop_words_path: String
+        :return: Set of stop words to ignore
+        :rtype: Set
+        '''
         stop_file = open(stop_words_path, 'r')
         stop_words = set()
         for line in stop_file.readlines():
