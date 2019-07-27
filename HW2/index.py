@@ -8,7 +8,7 @@ import math
 #import other modules as needed
 
 class index:
-    def __init__(self,path, stop_words_path):
+    def __init__(self,path='collection', stop_words_path='stop-list.txt'):
         self.path = path
         self.index = {}
         self.doc_list = {}
