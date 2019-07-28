@@ -28,6 +28,9 @@ class index:
         ## mapping of term to it's index in vector space
         self.term_idx_map = self.build_term_index_mapping()
         self.doc_vec = self.build_vector_space()
+        
+        self.CHAMP_R = 2
+        self.champ_list = self.get_champion_list()
 
     def build_query_vector(self, query_terms):
         '''Builds vector representation of given query
@@ -67,11 +70,11 @@ class index:
         mag = q_mag * d_mag
         return dot/mag
     
-    def calc_sim_all_docs(self, q_vec, q_mag):
+    def calc_sim_docs(self, q_vec, q_mag, doc_vec):
         similarity = []
-        for doc in self.doc_vec:
-            d_mag = self.doc_vec[doc][self.DOC_MAG]
-            d_vec = self.doc_vec[doc][self.DOC_VEC]
+        for doc in doc_vec:
+            d_mag = doc_vec[doc][self.DOC_MAG]
+            d_vec = doc_vec[doc][self.DOC_VEC]
             if d_mag == 0:
                 continue
             sim = self.cosine_similarity(q_vec, q_mag, d_vec, d_mag)
@@ -320,6 +323,29 @@ class index:
         word = word.translate(str.maketrans('','', string.punctuation))
         word = word.lower()
         return word
+    
+    def get_champion_list(self):
+        ## For each term, keep track of the top 8 docs.
+        champ_vec = dict()
+        doc_ids = set()
+        for term in self.index:
+            c_list = []
+            docs = self.index[term][1:]
+            
+            # append idf to head of list
+            c_list.append(self.index[term][0])
+            if len(docs) < self.CHAMP_R:
+                for doc in docs:
+                    doc_ids.add(doc[0])
+            else:
+                # sort and obtain the top R documents
+                docs = sorted(docs, key=lambda val: val[1])
+                docs.reverse()
+                for i in range(self.CHAMP_R):
+                    doc_ids.add(docs[i][0])
+        for doc_id in doc_ids:
+            champ_vec[doc_id] = self.doc_vec[doc_id]
+        return champ_vec
 
     def exact_query(self, query_terms, k):
         #function for exact top K retrieval (method 1)
@@ -335,7 +361,13 @@ class index:
     def inexact_query_champion(self, query_terms, k):
         #function for exact top K retrieval using champion list (method 2)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
-        pass
+        q_vec, q_mag = self.build_query_vector(query_terms)
+        docs_sim = self.calc_sim_docs(q_vec, q_mag, self.champ_list)
+        ranked_sim = self.rank_docs(docs_sim)
+        for i in range(k):
+            doc_id, sim_score = ranked_sim[i]
+            doc_name = self.doc_list[doc_id]
+            print('Document : ', doc_name, ' Similarity : ', sim_score)
 
     def inexact_query_index_elimination(self, query_terms, k):
         #function for exact top K retrieval using index elimination (method 3)
