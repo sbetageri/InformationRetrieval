@@ -351,7 +351,7 @@ class index:
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
         q_vec, q_mag = self.build_query_vector(query_terms)
-        docs_sim = self.calc_sim_all_docs(q_vec, q_mag)
+        docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
         ranked_sim = self.rank_docs(docs_sim)
         for i in range(k):
             doc_id, sim_score = ranked_sim[i]
@@ -372,7 +372,30 @@ class index:
     def inexact_query_index_elimination(self, query_terms, k):
         #function for exact top K retrieval using index elimination (method 3)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
-        pass
+        q_terms = []
+        for i, term in enumerate(query_terms):
+            term = self._tokenize(term)
+            if term not in self.stop_words:
+                query_terms[i] = term
+                idf = self._idf(term)
+                q_terms.append((term, idf))
+        q_terms = sorted(q_terms, key=lambda val : val[1])
+        q_terms.reverse()
+        num_terms = len(q_terms)
+        if num_terms % 2 == 0:
+            q_terms = q_terms[:num_terms // 2]
+        else:
+            q_terms = q_terms[:num_terms // 2 + 1]
+        
+        q_terms = [val[0] for val in q_terms]
+            
+        q_vec, q_mag = self.build_query_vector(q_terms)
+        docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
+        ranked_sim = self.rank_docs(docs_sim)
+        for i in range(k):
+            doc_id, sim_score = ranked_sim[i]
+            doc_name = self.doc_list[doc_id]
+            print('Document : ', doc_name, ' Similarity : ', sim_score)
 
     def inexact_query_cluster_pruning(self, query_terms, k):
         #function for exact top K retrieval using cluster pruning (method 4)
