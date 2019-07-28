@@ -5,6 +5,7 @@ import collections
 import time
 import string
 import math
+import random
 #import other modules as needed
 
 class index:
@@ -29,8 +30,12 @@ class index:
         self.term_idx_map = self.build_term_index_mapping()
         self.doc_vec = self.build_vector_space()
         
-        self.CHAMP_R = 2
-        self.champ_list = self.get_champion_list()
+        self.CHAMP_R = 8
+        # self.champ_list = self.get_champion_list()
+        
+        ## Cluster Pruning
+        self.leader = self.get_leader_vectors()
+        self.cluster = self.get_clusters()
 
     def build_query_vector(self, query_terms):
         '''Builds vector representation of given query
@@ -68,6 +73,8 @@ class index:
     def cosine_similarity(self, q_vec, q_mag, d_vec, d_mag):
         dot = sum([a * b for a, b in zip(q_vec, d_vec)])
         mag = q_mag * d_mag
+        if mag == 0:
+            return 0
         return dot/mag
     
     def calc_sim_docs(self, q_vec, q_mag, doc_vec):
@@ -158,6 +165,7 @@ class index:
                 self.DOC_MAG : magnitude, 
                 self.DOC_VEC : doc_vec
             }
+            doc_file.close()
         return doc_vec_mapping
 
     def calc_docs_idf(self):
@@ -208,6 +216,7 @@ class index:
         for line in stop_file.readlines():
             word = line[:-1]
             stop_words.add(word)
+        stop_file.close()
         return stop_words
 
     def buildIndex(self):
@@ -292,7 +301,7 @@ class index:
         '''
         ## doc must be the name of the DirEntry
         index = {}
-        doc_file = open(doc, 'r')
+        doc_file = open(doc, 'r', encoding='utf-8')
         content = doc_file.read()
         lines = content.split("\n")
         count = 0
@@ -310,6 +319,7 @@ class index:
                     index[word].append(count)
                 else:
                     index[word] = [count]
+        doc_file.close()
         return index
 
     def _tokenize(self, word):
@@ -346,7 +356,81 @@ class index:
         for doc_id in doc_ids:
             champ_vec[doc_id] = self.doc_vec[doc_id]
         return champ_vec
+    
+    def get_leader_vectors(self):
+        doc_ids = list(self.doc_list)
+        num_leaders = int(math.sqrt(self.num_docs))
+        leader_docs = random.choices(doc_ids, k=num_leaders)
+        return leader_docs
 
+    def get_clusters(self):
+        leader_vec = {}
+        clusters = {}
+        for doc in self.leader:
+            leader_vec[doc] = self.doc_vec[doc]
+            clusters[doc] = []
+        for doc in self.doc_vec:
+            d_mag = self.doc_vec[doc][self.DOC_MAG]
+            d_vec = self.doc_vec[doc][self.DOC_VEC]
+            if doc in leader_vec:
+                continue
+            max_sim = -1
+            max_leader = -1
+            for leader in self.leader:
+                l_mag = self.doc_vec[leader][self.DOC_MAG]
+                l_vec = self.doc_vec[leader][self.DOC_VEC]
+                sim = self.cosine_similarity(d_vec, d_mag, l_vec, l_mag)
+                if sim > max_sim:
+                    max_sim = sim
+                    max_leader = leader
+            clusters[max_leader].append(doc)
+        return clusters
+        
+    def rank_leaders(self, q_vec, q_mag):
+        ranked_leaders = []
+        for leader in self.leader:
+            l_mag = self.doc_vec[leader][self.DOC_MAG]
+            l_vec = self.doc_vec[leader][self.DOC_VEC]
+            sim = self.cosine_similarity(q_vec, q_mag, l_vec, l_mag)
+            ranked_leaders.append((leader, sim))
+        ranked_leaders = sorted(ranked_leaders, key=lambda val : val[1])
+        ranked_leaders.reverse()
+        return ranked_leaders
+    
+    def get_ranked_docs(self, q_vec, q_mag, leader_id, cluster):
+        ranked_docs = []
+        l_mag = self.doc_vec[leader_id][self.DOC_MAG]
+        l_vec = self.doc_vec[leader_id][self.DOC_VEC]
+        sim = self.cosine_similarity(q_vec, q_mag, l_vec, l_mag)
+        ranked_docs.append((leader_id, sim))
+        for doc in cluster:
+            d_mag = self.doc_vec[doc][self.DOC_MAG]
+            d_vec = self.doc_vec[doc][self.DOC_VEC]
+            sim = self.cosine_similarity(q_vec, q_mag, d_vec, d_mag)
+            ranked_docs.append((doc, sim))
+        print('Leader : ', leader_id)
+        ranked_docs = sorted(ranked_docs, key=lambda val: val[1])
+        ranked_docs.reverse()
+        return ranked_docs
+        
+    def get_top_k_docs(self, q_vec, q_mag, k):
+        ## rank leaders in order of similarity to query
+        ranked_leaders = self.rank_leaders(q_vec, q_mag)
+        print(ranked_leaders)
+        
+        # k_doc has a structure of [(doc_id, similarity), ]
+        k_docs = []
+        for leader in ranked_leaders:
+            if len(k_docs) > k:
+                return k_docs
+            ## rank cluster documents and leader document on similarity to query
+            ## leader[0] is just the id
+            ranked_docs = self.get_ranked_docs(q_vec, q_mag, leader[0], self.cluster[leader[0]])
+            print('Ranked Docs')
+            print(ranked_docs)
+            k_docs.extend(ranked_docs)
+        return k_docs
+        
     def exact_query(self, query_terms, k):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
@@ -400,7 +484,21 @@ class index:
     def inexact_query_cluster_pruning(self, query_terms, k):
         #function for exact top K retrieval using cluster pruning (method 4)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
-        pass
+        
+        ## leader_vec is a list of doc_ids of the 
+        
+        ## clusters is a dict with the following structure 
+        ## { leader_doc_id : [cluster_members_doc_id]}
+        
+        q_vec, q_mag = self.build_query_vector(query_terms)
+
+        similarity = self.get_top_k_docs(q_vec, q_mag, k)
+        
+        ranked_sim = sorted(similarity, key=lambda val : val[1])
+        ranked_sim.reverse()
+        
+        for i in range(k):
+            print('Document : ', ranked_sim[i][0], ' Similarity : ', ranked_sim[i][1])
 
     def print_dict(self):
         #function to print the terms and posting list in the index
@@ -409,3 +507,7 @@ class index:
     def print_doc_list(self):
     # function to print the documents and their document id
         pass
+
+if __name__ == '__main__':
+    ir = index('collection')
+    ir.inexact_query_cluster_pruning(['without', 'yemen'], 10)
