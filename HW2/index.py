@@ -8,7 +8,7 @@ import math
 #import other modules as needed
 
 class index:
-    def __init__(self,path='collection', stop_words_path='stop-list.txt'):
+    def __init__(self,path='test_c/', stop_words_path='stop-list.txt'):
         self.path = path
         self.index = {}
         self.doc_list = {}
@@ -16,12 +16,18 @@ class index:
         self.buildIndex()
         self.num_docs = len(self.doc_list)
         self.terms = list(self.index)
+        
+        ## calc the idf for each document
         self.calc_docs_idf()
         self.num_terms = len(self.terms)
-        self.term_idx_map = self.build_term_index_mapping()
-        self.doc_vec = self.build_vector_space()
+        
+        ## Constant keys for magnitude and vector of documents
         self.DOC_MAG = 'magnitude'
         self.DOC_VEC = 'vector'
+        
+        ## mapping of term to it's index in vector space
+        self.term_idx_map = self.build_term_index_mapping()
+        self.doc_vec = self.build_vector_space()
 
     def build_query_vector(self, query_terms):
         '''Builds vector representation of given query
@@ -36,18 +42,46 @@ class index:
 
         query_vec = [0] * self.num_terms
         for term in query_terms:
+            if term in self.stop_words:
+                continue
             idx = self.term_idx_map[term]
             query_vec[idx] += 1
         
         magnitude = 0
-        for term in query_terms:
+        for term in set(query_terms):
             idx = self.term_idx_map[term]
             idf = self._idf(term)
-            val = math.log10(1 + qyery_vec[idx]) * idf
+            tf = query_vec[idx]
+            if tf == 0:
+                val = 0
+            else:
+                val = 1 + math.log10(tf)
+            val = val * idf
             magnitude += val ** 2
             query_vec[idx] = val
         magnitude = math.sqrt(magnitude)
         return query_vec, magnitude
+    
+    def cosine_similarity(self, q_vec, q_mag, d_vec, d_mag):
+        dot = sum([a * b for a, b in zip(q_vec, d_vec)])
+        mag = q_mag * d_mag
+        return dot/mag
+    
+    def calc_sim_all_docs(self, q_vec, q_mag):
+        similarity = []
+        for doc in self.doc_vec:
+            d_mag = self.doc_vec[doc][self.DOC_MAG]
+            d_vec = self.doc_vec[doc][self.DOC_VEC]
+            if d_mag == 0:
+                continue
+            sim = self.cosine_similarity(q_vec, q_mag, d_vec, d_mag)
+            similarity.append((doc, sim))
+        return similarity
+    
+    def rank_docs(self, docs_sim):
+        ranked = sorted(docs_sim, key=lambda val : val[1])
+        ranked.reverse()
+        return ranked
 
     def build_term_index_mapping(self):
         '''Maps given term to it's position on vector
@@ -108,7 +142,11 @@ class index:
             for term in self.index:
                 idx = self.term_idx_map[term]
                 tf = doc_vec[idx]
-                doc_vec[idx] = math.log10(1 + tf) * self._idf(term)
+                if tf == 0:
+                    val = 0
+                else:
+                    val = 1 + math.log10(tf)
+                doc_vec[idx] = val * self._idf(term)
                 magnitude += doc_vec[idx] ** 2
 
             magnitude = math.sqrt(magnitude)
@@ -132,7 +170,7 @@ class index:
         new_index = {}
         for term in self.index:
             df = len(self.index[term])
-            idf = math.log10(self.num_docs) - math.log10(df)
+            idf = math.log10(self.num_docs / df)
             doc_index = {}
             doc_details = [idf]
             for doc in self.index[term]:
@@ -143,12 +181,16 @@ class index:
 
                 ## Add weight
                 tf_d = len(doc[1])
-                weight = math.log10(1 + tf_d) * idf
+                if tf_d == 0:
+                    weight = 0
+                else:
+                    weight = (1 + math.log10(tf_d)) * idf
                 details.append(weight)
                 details.append(tuple(doc[1]))
                 doc_details.append(details)
             new_index[term] = doc_details
         self.index = new_index
+        # return new_index
 
     def build_stop_words_list(self, stop_words_path):
         '''Build stop words list
@@ -282,7 +324,13 @@ class index:
     def exact_query(self, query_terms, k):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
-        pass
+        q_vec, q_mag = self.build_query_vector(query_terms)
+        docs_sim = self.calc_sim_all_docs(q_vec, q_mag)
+        ranked_sim = self.rank_docs(docs_sim)
+        for i in range(k):
+            doc_id, sim_score = ranked_sim[i]
+            doc_name = self.doc_list[doc_id]
+            print('Document : ', doc_name, ' Similarity : ', sim_score)
 
     def inexact_query_champion(self, query_terms, k):
         #function for exact top K retrieval using champion list (method 2)
