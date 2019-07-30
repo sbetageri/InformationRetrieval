@@ -13,8 +13,18 @@ class index:
         self.path = path
         self.index = {}
         self.doc_list = {}
+        s_t = time.time()
         self.stop_words = self.build_stop_words_list(stop_words_path)
+        e_t = time.time()
+        t_t = e_t - s_t
+        print('Time taken to build stop words list : ', t_t)
+        s_t = time.time()
         self.buildIndex()
+        e_t = time.time()
+        t_t = e_t - s_t
+        print('Time taken to build index : ', t_t)
+        
+        s_t = time.time()
         self.num_docs = len(self.doc_list)
         self.terms = list(self.index)
         
@@ -29,13 +39,24 @@ class index:
         ## mapping of term to it's index in vector space
         self.term_idx_map = self.build_term_index_mapping()
         self.doc_vec = self.build_vector_space()
-        
+        e_t = time.time()
+        t_t = e_t - s_t
+        print('Time taken to build vector space : ', t_t)
+
+        s_t = time.time() 
         self.CHAMP_R = 8
-        # self.champ_list = self.get_champion_list()
+        self.champ_list = self.get_champion_list()
+        e_t = time.time()
+        t_t = e_t - s_t
+        print('Time taken to build champion lists', t_t)
         
         ## Cluster Pruning
+        s_t = time.time()
         self.leader = self.get_leader_vectors()
         self.cluster = self.get_clusters()
+        e_t = time.time()
+        t_t = e_t - s_t
+        print('Time taken to prune clusters : ', t_t)
 
     def build_query_vector(self, query_terms):
         '''Builds vector representation of given query
@@ -235,7 +256,6 @@ class index:
             if docID not in self.doc_list:
                 self.doc_list[docID] = (doc_file.path, doc_file.name)
 
-            print('Indexing : ', docID)
             doc_index = self.build_inverted_index_for_doc(doc_file)
             self._add_doc_index_to_dir_index(docID, doc_index)
         print('Index built')
@@ -408,7 +428,6 @@ class index:
             d_vec = self.doc_vec[doc][self.DOC_VEC]
             sim = self.cosine_similarity(q_vec, q_mag, d_vec, d_mag)
             ranked_docs.append((doc, sim))
-        print('Leader : ', leader_id)
         ranked_docs = sorted(ranked_docs, key=lambda val: val[1])
         ranked_docs.reverse()
         return ranked_docs
@@ -416,27 +435,25 @@ class index:
     def get_top_k_docs(self, q_vec, q_mag, k):
         ## rank leaders in order of similarity to query
         ranked_leaders = self.rank_leaders(q_vec, q_mag)
-        print(ranked_leaders)
         
         # k_doc has a structure of [(doc_id, similarity), ]
         k_docs = []
         for leader in ranked_leaders:
-            if len(k_docs) > k:
-                return k_docs
             ## rank cluster documents and leader document on similarity to query
             ## leader[0] is just the id
             ranked_docs = self.get_ranked_docs(q_vec, q_mag, leader[0], self.cluster[leader[0]])
-            print('Ranked Docs')
-            print(ranked_docs)
             k_docs.extend(ranked_docs)
         return k_docs
         
     def exact_query(self, query_terms, k):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
+        s_t = time.time()
         q_vec, q_mag = self.build_query_vector(query_terms)
         docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
         ranked_sim = self.rank_docs(docs_sim)
+        e_t = time.time()
+        print('Time taken : ', e_t - s_t)
         for i in range(k):
             doc_id, sim_score = ranked_sim[i]
             doc_name = self.doc_list[doc_id]
@@ -445,9 +462,14 @@ class index:
     def inexact_query_champion(self, query_terms, k):
         #function for exact top K retrieval using champion list (method 2)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
+        s_t = time.time()
         q_vec, q_mag = self.build_query_vector(query_terms)
+        
+        ## Difference betweeen this and the line above is that we're passing in champ_list to calc_sim_docs
         docs_sim = self.calc_sim_docs(q_vec, q_mag, self.champ_list)
         ranked_sim = self.rank_docs(docs_sim)
+        e_t = time.time()
+        print('Time taken : ', e_t - s_t)
         for i in range(k):
             doc_id, sim_score = ranked_sim[i]
             doc_name = self.doc_list[doc_id]
@@ -456,6 +478,7 @@ class index:
     def inexact_query_index_elimination(self, query_terms, k):
         #function for exact top K retrieval using index elimination (method 3)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
+        s_t = time.time()
         q_terms = []
         for i, term in enumerate(query_terms):
             term = self._tokenize(term)
@@ -474,8 +497,10 @@ class index:
         q_terms = [val[0] for val in q_terms]
             
         q_vec, q_mag = self.build_query_vector(q_terms)
-        docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
+        docs_sim = self.calc_sim_docs(q_vec, q_mag, self.champ_list)
         ranked_sim = self.rank_docs(docs_sim)
+        e_t = time.time()
+        print('Time taken : ', e_t - s_t)
         for i in range(k):
             doc_id, sim_score = ranked_sim[i]
             doc_name = self.doc_list[doc_id]
@@ -490,24 +515,69 @@ class index:
         ## clusters is a dict with the following structure 
         ## { leader_doc_id : [cluster_members_doc_id]}
         
+        s_t = time.time()
         q_vec, q_mag = self.build_query_vector(query_terms)
 
         similarity = self.get_top_k_docs(q_vec, q_mag, k)
         
         ranked_sim = sorted(similarity, key=lambda val : val[1])
         ranked_sim.reverse()
+        e_t = time.time()
+        print('Time taken : ', e_t - s_t)
         
         for i in range(k):
             print('Document : ', ranked_sim[i][0], ' Similarity : ', ranked_sim[i][1])
 
     def print_dict(self):
         #function to print the terms and posting list in the index
-        pass
+        print('Printing Index')
+        for i in self.index:
+            print(i)
 
     def print_doc_list(self):
     # function to print the documents and their document id
-        pass
+        for i in self.index:
+            print(self.index[i])
+    
+    def clean_query(self, query):
+        print('Query Terms')
+        q_terms = query.split(' ')
+        q = []
+        for term in q_terms:
+            if term not in self.stop_words:
+                q.append(term)
+        print(q)
+        return q
 
 if __name__ == '__main__':
     ir = index('collection')
-    ir.inexact_query_cluster_pruning(['without', 'yemen'], 10)
+    
+    query_terms = ir.clean_query('US and december without india reconsider')
+    ir.exact_query(query_terms, 10)
+    ir.inexact_query_champion(query_terms, 10)
+    ir.inexact_query_index_elimination(query_terms, 10)
+    ir.inexact_query_cluster_pruning(query_terms, 10)
+
+    query_terms = ir.clean_query('Ahead of the family matter')
+    ir.exact_query(query_terms, 10)
+    ir.inexact_query_champion(query_terms, 10)
+    ir.inexact_query_index_elimination(query_terms, 10)
+    ir.inexact_query_cluster_pruning(query_terms, 10)
+    
+    query_terms = ir.clean_query('is not needless be running')
+    ir.exact_query(query_terms, 10)
+    ir.inexact_query_champion(query_terms, 10)
+    ir.inexact_query_index_elimination(query_terms, 10)
+    ir.inexact_query_cluster_pruning(query_terms, 10)
+    
+    query_terms = ir.clean_query('corruption and rivalries')
+    ir.exact_query(query_terms, 10)
+    ir.inexact_query_champion(query_terms, 10)
+    ir.inexact_query_index_elimination(query_terms, 10)
+    ir.inexact_query_cluster_pruning(query_terms, 10)
+    
+    query_terms = ir.clean_query('India and US are countries')
+    ir.exact_query(query_terms, 10)
+    ir.inexact_query_champion(query_terms, 10)
+    ir.inexact_query_index_elimination(query_terms, 10)
+    ir.inexact_query_cluster_pruning(query_terms, 10)

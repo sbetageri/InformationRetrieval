@@ -1,0 +1,237 @@
+Time taken to build stop words list :  0.00011491775512695312
+Building index
+Index built
+Time taken to build index :  1.084101915359497
+Time taken to build vector space :  11.58020305633545
+Time taken to build champion lists 0.048004150390625
+Time taken to prune clusters :  20.341827869415283
+Query Terms
+['US', 'december', 'without', 'india', 'reconsider']
+Time taken :  1.2175381183624268
+Document :  ('collection/Text-046.txt', 'Text-046.txt')  Similarity :  0.08148358711658087
+Document :  ('collection/Text-024.txt', 'Text-024.txt')  Similarity :  0.07393132844746653
+Document :  ('collection/Text-007.txt', 'Text-007.txt')  Similarity :  0.05125010373335672
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.05124061577155017
+Document :  ('collection/Text-117.txt', 'Text-117.txt')  Similarity :  0.04977832400297587
+Document :  ('collection/Text-138.txt', 'Text-138.txt')  Similarity :  0.04703648752034171
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.046963923393009595
+Document :  ('collection/Text-233.txt', 'Text-233.txt')  Similarity :  0.043414534377745596
+Document :  ('collection/Text-213.txt', 'Text-213.txt')  Similarity :  0.043068992729497754
+Document :  ('collection/Text-135.txt', 'Text-135.txt')  Similarity :  0.04294125092253608
+Time taken :  1.2109959125518799
+Document :  ('collection/Text-046.txt', 'Text-046.txt')  Similarity :  0.08148358711658087
+Document :  ('collection/Text-024.txt', 'Text-024.txt')  Similarity :  0.07393132844746653
+Document :  ('collection/Text-007.txt', 'Text-007.txt')  Similarity :  0.05125010373335672
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.05124061577155017
+Document :  ('collection/Text-117.txt', 'Text-117.txt')  Similarity :  0.04977832400297587
+Document :  ('collection/Text-138.txt', 'Text-138.txt')  Similarity :  0.04703648752034171
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.046963923393009595
+Document :  ('collection/Text-233.txt', 'Text-233.txt')  Similarity :  0.043414534377745596
+Document :  ('collection/Text-213.txt', 'Text-213.txt')  Similarity :  0.043068992729497754
+Document :  ('collection/Text-135.txt', 'Text-135.txt')  Similarity :  0.04294125092253608
+Time taken :  1.1705706119537354
+Document :  ('collection/Text-046.txt', 'Text-046.txt')  Similarity :  0.08237636513496395
+Document :  ('collection/Text-024.txt', 'Text-024.txt')  Similarity :  0.07679183011539852
+Document :  ('collection/Text-007.txt', 'Text-007.txt')  Similarity :  0.05128101064277125
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.05014519266723671
+Document :  ('collection/Text-138.txt', 'Text-138.txt')  Similarity :  0.04885639193476333
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.046168149840609636
+Document :  ('collection/Text-233.txt', 'Text-233.txt')  Similarity :  0.045094300596044724
+Document :  ('collection/Text-213.txt', 'Text-213.txt')  Similarity :  0.04473538948072643
+Document :  ('collection/Text-117.txt', 'Text-117.txt')  Similarity :  0.044585536274950814
+Document :  ('collection/Text-063.txt', 'Text-063.txt')  Similarity :  0.043735946232843825
+Time taken :  1.2686841487884521
+Document :  46  Similarity :  0.08148358711658087
+Document :  24  Similarity :  0.07393132844746653
+Document :  7  Similarity :  0.05125010373335672
+Document :  184  Similarity :  0.05124061577155017
+Document :  117  Similarity :  0.04977832400297587
+Document :  138  Similarity :  0.04703648752034171
+Document :  420  Similarity :  0.046963923393009595
+Document :  233  Similarity :  0.043414534377745596
+Document :  213  Similarity :  0.043068992729497754
+Document :  135  Similarity :  0.04294125092253608
+Query Terms
+['Ahead', 'family', 'matter']
+Time taken :  1.1851699352264404
+Document :  ('collection/Text-363.txt', 'Text-363.txt')  Similarity :  0.05480714848684621
+Document :  ('collection/Text-151.txt', 'Text-151.txt')  Similarity :  0.052067918824861684
+Document :  ('collection/Text-229.txt', 'Text-229.txt')  Similarity :  0.0455180897418939
+Document :  ('collection/Text-169.txt', 'Text-169.txt')  Similarity :  0.04284366433536242
+Document :  ('collection/Text-181.txt', 'Text-181.txt')  Similarity :  0.04152672413242543
+Document :  ('collection/Text-279.txt', 'Text-279.txt')  Similarity :  0.04125027375538954
+Document :  ('collection/Text-405.txt', 'Text-405.txt')  Similarity :  0.03940743747684309
+Document :  ('collection/Text-377.txt', 'Text-377.txt')  Similarity :  0.03887161641890461
+Document :  ('collection/Text-175.txt', 'Text-175.txt')  Similarity :  0.03858756042769387
+Document :  ('collection/Text-364.txt', 'Text-364.txt')  Similarity :  0.038556857930415654
+Time taken :  1.190342903137207
+Document :  ('collection/Text-363.txt', 'Text-363.txt')  Similarity :  0.05480714848684621
+Document :  ('collection/Text-151.txt', 'Text-151.txt')  Similarity :  0.052067918824861684
+Document :  ('collection/Text-229.txt', 'Text-229.txt')  Similarity :  0.0455180897418939
+Document :  ('collection/Text-169.txt', 'Text-169.txt')  Similarity :  0.04284366433536242
+Document :  ('collection/Text-181.txt', 'Text-181.txt')  Similarity :  0.04152672413242543
+Document :  ('collection/Text-279.txt', 'Text-279.txt')  Similarity :  0.04125027375538954
+Document :  ('collection/Text-405.txt', 'Text-405.txt')  Similarity :  0.03940743747684309
+Document :  ('collection/Text-377.txt', 'Text-377.txt')  Similarity :  0.03887161641890461
+Document :  ('collection/Text-175.txt', 'Text-175.txt')  Similarity :  0.03858756042769387
+Document :  ('collection/Text-364.txt', 'Text-364.txt')  Similarity :  0.038556857930415654
+Time taken :  1.1988868713378906
+Document :  ('collection/Text-363.txt', 'Text-363.txt')  Similarity :  0.06483417801359713
+Document :  ('collection/Text-151.txt', 'Text-151.txt')  Similarity :  0.06159380320066822
+Document :  ('collection/Text-181.txt', 'Text-181.txt')  Similarity :  0.04912408507020535
+Document :  ('collection/Text-279.txt', 'Text-279.txt')  Similarity :  0.048797057785416535
+Document :  ('collection/Text-364.txt', 'Text-364.txt')  Similarity :  0.04561087850256428
+Document :  ('collection/Text-006.txt', 'Text-006.txt')  Similarity :  0.043642789858895574
+Document :  ('collection/Text-007.txt', 'Text-007.txt')  Similarity :  0.03983229754053754
+Document :  ('collection/Text-386.txt', 'Text-386.txt')  Similarity :  0.038794617910944414
+Document :  ('collection/Text-093.txt', 'Text-093.txt')  Similarity :  0.03786452889302032
+Document :  ('collection/Text-105.txt', 'Text-105.txt')  Similarity :  0.03490731686081985
+Time taken :  1.2489750385284424
+Document :  363  Similarity :  0.05480714848684621
+Document :  151  Similarity :  0.052067918824861684
+Document :  229  Similarity :  0.0455180897418939
+Document :  169  Similarity :  0.04284366433536242
+Document :  181  Similarity :  0.04152672413242543
+Document :  279  Similarity :  0.04125027375538954
+Document :  405  Similarity :  0.03940743747684309
+Document :  377  Similarity :  0.03887161641890461
+Document :  175  Similarity :  0.03858756042769387
+Document :  364  Similarity :  0.038556857930415654
+Query Terms
+['not', 'needless', 'running']
+Time taken :  1.1975178718566895
+Document :  ('collection/Text-073.txt', 'Text-073.txt')  Similarity :  0.12411080290269245
+Document :  ('collection/Text-270.txt', 'Text-270.txt')  Similarity :  0.06450144699905158
+Document :  ('collection/Text-071.txt', 'Text-071.txt')  Similarity :  0.05236143525102223
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.04276437858042766
+Document :  ('collection/Text-125.txt', 'Text-125.txt')  Similarity :  0.02879837214382158
+Document :  ('collection/Text-246.txt', 'Text-246.txt')  Similarity :  0.025954323371377187
+Document :  ('collection/Text-245.txt', 'Text-245.txt')  Similarity :  0.025689270247841515
+Document :  ('collection/Text-077.txt', 'Text-077.txt')  Similarity :  0.025161656291157998
+Document :  ('collection/Text-222.txt', 'Text-222.txt')  Similarity :  0.02458713561588713
+Document :  ('collection/Text-358.txt', 'Text-358.txt')  Similarity :  0.02407444589627778
+Time taken :  1.1729891300201416
+Document :  ('collection/Text-073.txt', 'Text-073.txt')  Similarity :  0.12411080290269245
+Document :  ('collection/Text-270.txt', 'Text-270.txt')  Similarity :  0.06450144699905158
+Document :  ('collection/Text-071.txt', 'Text-071.txt')  Similarity :  0.05236143525102223
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.04276437858042766
+Document :  ('collection/Text-125.txt', 'Text-125.txt')  Similarity :  0.02879837214382158
+Document :  ('collection/Text-246.txt', 'Text-246.txt')  Similarity :  0.025954323371377187
+Document :  ('collection/Text-245.txt', 'Text-245.txt')  Similarity :  0.025689270247841515
+Document :  ('collection/Text-077.txt', 'Text-077.txt')  Similarity :  0.025161656291157998
+Document :  ('collection/Text-222.txt', 'Text-222.txt')  Similarity :  0.02458713561588713
+Document :  ('collection/Text-358.txt', 'Text-358.txt')  Similarity :  0.02407444589627778
+Time taken :  1.1588647365570068
+Document :  ('collection/Text-073.txt', 'Text-073.txt')  Similarity :  0.12396278122295434
+Document :  ('collection/Text-270.txt', 'Text-270.txt')  Similarity :  0.06433218632982579
+Document :  ('collection/Text-071.txt', 'Text-071.txt')  Similarity :  0.052261482738906004
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.04281544273926616
+Document :  ('collection/Text-125.txt', 'Text-125.txt')  Similarity :  0.028832759750943626
+Document :  ('collection/Text-246.txt', 'Text-246.txt')  Similarity :  0.02559485483813512
+Document :  ('collection/Text-245.txt', 'Text-245.txt')  Similarity :  0.02537893420814658
+Document :  ('collection/Text-077.txt', 'Text-077.txt')  Similarity :  0.02519170136269049
+Document :  ('collection/Text-222.txt', 'Text-222.txt')  Similarity :  0.0246164946628358
+Document :  ('collection/Text-358.txt', 'Text-358.txt')  Similarity :  0.02378361754166819
+Time taken :  1.289989709854126
+Document :  73  Similarity :  0.12411080290269245
+Document :  270  Similarity :  0.06450144699905158
+Document :  71  Similarity :  0.05236143525102223
+Document :  184  Similarity :  0.04276437858042766
+Document :  125  Similarity :  0.02879837214382158
+Document :  246  Similarity :  0.025954323371377187
+Document :  245  Similarity :  0.025689270247841515
+Document :  77  Similarity :  0.025161656291157998
+Document :  222  Similarity :  0.02458713561588713
+Document :  358  Similarity :  0.02407444589627778
+Query Terms
+['corruption', 'rivalries']
+Time taken :  1.230470895767212
+Document :  ('collection/Text-025.txt', 'Text-025.txt')  Similarity :  0.08038149543313408
+Document :  ('collection/Text-118.txt', 'Text-118.txt')  Similarity :  0.06030762361109844
+Document :  ('collection/Text-355.txt', 'Text-355.txt')  Similarity :  0.057496846119117706
+Document :  ('collection/Text-223.txt', 'Text-223.txt')  Similarity :  0.044262054773868416
+Document :  ('collection/Text-159.txt', 'Text-159.txt')  Similarity :  0.04424916946571934
+Document :  ('collection/Text-322.txt', 'Text-322.txt')  Similarity :  0.04380288153371864
+Document :  ('collection/Text-422.txt', 'Text-422.txt')  Similarity :  0.043182312715480085
+Document :  ('collection/Text-408.txt', 'Text-408.txt')  Similarity :  0.041045979507624654
+Document :  ('collection/Text-371.txt', 'Text-371.txt')  Similarity :  0.03214049331585292
+Document :  ('collection/Text-088.txt', 'Text-088.txt')  Similarity :  0.03205560849778744
+Time taken :  1.1945760250091553
+Document :  ('collection/Text-025.txt', 'Text-025.txt')  Similarity :  0.08038149543313408
+Document :  ('collection/Text-118.txt', 'Text-118.txt')  Similarity :  0.06030762361109844
+Document :  ('collection/Text-355.txt', 'Text-355.txt')  Similarity :  0.057496846119117706
+Document :  ('collection/Text-223.txt', 'Text-223.txt')  Similarity :  0.044262054773868416
+Document :  ('collection/Text-159.txt', 'Text-159.txt')  Similarity :  0.04424916946571934
+Document :  ('collection/Text-322.txt', 'Text-322.txt')  Similarity :  0.04380288153371864
+Document :  ('collection/Text-422.txt', 'Text-422.txt')  Similarity :  0.043182312715480085
+Document :  ('collection/Text-408.txt', 'Text-408.txt')  Similarity :  0.041045979507624654
+Document :  ('collection/Text-371.txt', 'Text-371.txt')  Similarity :  0.03214049331585292
+Document :  ('collection/Text-088.txt', 'Text-088.txt')  Similarity :  0.03205560849778744
+Time taken :  1.15425705909729
+Document :  ('collection/Text-355.txt', 'Text-355.txt')  Similarity :  0.07302415466503287
+Document :  ('collection/Text-025.txt', 'Text-025.txt')  Similarity :  0.0632897771284511
+Document :  ('collection/Text-159.txt', 'Text-159.txt')  Similarity :  0.05619887720744992
+Document :  ('collection/Text-408.txt', 'Text-408.txt')  Similarity :  0.05213064990961189
+Document :  ('collection/Text-422.txt', 'Text-422.txt')  Similarity :  0.0
+Document :  ('collection/Text-421.txt', 'Text-421.txt')  Similarity :  0.0
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.0
+Document :  ('collection/Text-419.txt', 'Text-419.txt')  Similarity :  0.0
+Document :  ('collection/Text-418.txt', 'Text-418.txt')  Similarity :  0.0
+Document :  ('collection/Text-417.txt', 'Text-417.txt')  Similarity :  0.0
+Time taken :  1.2813379764556885
+Document :  25  Similarity :  0.08038149543313408
+Document :  118  Similarity :  0.06030762361109844
+Document :  355  Similarity :  0.057496846119117706
+Document :  223  Similarity :  0.044262054773868416
+Document :  159  Similarity :  0.04424916946571934
+Document :  322  Similarity :  0.04380288153371864
+Document :  422  Similarity :  0.043182312715480085
+Document :  408  Similarity :  0.041045979507624654
+Document :  371  Similarity :  0.03214049331585292
+Document :  88  Similarity :  0.03205560849778744
+Query Terms
+['India', 'US', 'countries']
+Time taken :  1.1989691257476807
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.12574967620450497
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.09635981581935917
+Document :  ('collection/Text-002.txt', 'Text-002.txt')  Similarity :  0.0908035678362466
+Document :  ('collection/Text-063.txt', 'Text-063.txt')  Similarity :  0.07918330782738071
+Document :  ('collection/Text-031.txt', 'Text-031.txt')  Similarity :  0.07332154450033557
+Document :  ('collection/Text-411.txt', 'Text-411.txt')  Similarity :  0.07313254213340226
+Document :  ('collection/Text-046.txt', 'Text-046.txt')  Similarity :  0.07074955966922135
+Document :  ('collection/Text-003.txt', 'Text-003.txt')  Similarity :  0.06985739604981989
+Document :  ('collection/Text-417.txt', 'Text-417.txt')  Similarity :  0.058390974874883414
+Document :  ('collection/Text-315.txt', 'Text-315.txt')  Similarity :  0.056118711557460184
+Time taken :  1.1794698238372803
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.12574967620450497
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.09635981581935917
+Document :  ('collection/Text-002.txt', 'Text-002.txt')  Similarity :  0.0908035678362466
+Document :  ('collection/Text-063.txt', 'Text-063.txt')  Similarity :  0.07918330782738071
+Document :  ('collection/Text-031.txt', 'Text-031.txt')  Similarity :  0.07332154450033557
+Document :  ('collection/Text-411.txt', 'Text-411.txt')  Similarity :  0.07313254213340226
+Document :  ('collection/Text-046.txt', 'Text-046.txt')  Similarity :  0.07074955966922135
+Document :  ('collection/Text-003.txt', 'Text-003.txt')  Similarity :  0.06985739604981989
+Document :  ('collection/Text-417.txt', 'Text-417.txt')  Similarity :  0.058390974874883414
+Document :  ('collection/Text-315.txt', 'Text-315.txt')  Similarity :  0.056118711557460184
+Time taken :  1.179396152496338
+Document :  ('collection/Text-420.txt', 'Text-420.txt')  Similarity :  0.12417247415671649
+Document :  ('collection/Text-002.txt', 'Text-002.txt')  Similarity :  0.09316961205221315
+Document :  ('collection/Text-184.txt', 'Text-184.txt')  Similarity :  0.0931527738342527
+Document :  ('collection/Text-063.txt', 'Text-063.txt')  Similarity :  0.08124656604454614
+Document :  ('collection/Text-031.txt', 'Text-031.txt')  Similarity :  0.07523206432245982
+Document :  ('collection/Text-411.txt', 'Text-411.txt')  Similarity :  0.07200091038473821
+Document :  ('collection/Text-003.txt', 'Text-003.txt')  Similarity :  0.06932499514119239
+Document :  ('collection/Text-046.txt', 'Text-046.txt')  Similarity :  0.06839487679277895
+Document :  ('collection/Text-417.txt', 'Text-417.txt')  Similarity :  0.05991245284826563
+Document :  ('collection/Text-315.txt', 'Text-315.txt')  Similarity :  0.05263955406597577
+Time taken :  1.268899917602539
+Document :  420  Similarity :  0.12574967620450497
+Document :  184  Similarity :  0.09635981581935917
+Document :  2  Similarity :  0.0908035678362466
+Document :  63  Similarity :  0.07918330782738071
+Document :  31  Similarity :  0.07332154450033557
+Document :  411  Similarity :  0.07313254213340226
+Document :  46  Similarity :  0.07074955966922135
+Document :  3  Similarity :  0.06985739604981989
+Document :  417  Similarity :  0.058390974874883414
+Document :  315  Similarity :  0.056118711557460184
