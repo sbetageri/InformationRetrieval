@@ -22,7 +22,9 @@ class index:
         self.terms = list(self.index)
         
         ## Calc the idf for each document
+        print('Calculating IDF')
         self.calc_docs_idf()
+        print('Calculated IDF')
         self.num_terms = len(self.terms)
         
         ## Constant keys for magnitude and vector of documents
@@ -40,7 +42,9 @@ class index:
         self.idx_term_map = dict(map(reversed, self.term_idx_map.items()))
         
         ## Build vector space
+        print('Building Vector Space')
         self.doc_vec = self.build_vector_space()
+        print('Vector Space Built')
     
     def rank_docs(self, docs_sim):
         ranked = sorted(docs_sim, key=lambda val : val[1])
@@ -76,7 +80,7 @@ class index:
         mag = q_mag * d_mag
         if mag == 0:
             return 0
-        return dot/ma
+        return dot/mag
     
     def build_term_index_mapping(self):
         '''Maps given term to it's position on vector
@@ -530,23 +534,18 @@ class index:
     def query(self, query_terms, k):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
-        s_t = time.time()
         q_vec, q_mag = self.build_query_vector(query_terms)
         docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
         ranked_sim = self.rank_docs(docs_sim)
-        e_t = time.time()
-        print('Time taken : ', e_t - s_t)
         for i in range(k):
             doc_id, sim_score = ranked_sim[i]
             doc_name = self.doc_list[doc_id]
             print('Document : ', doc_name, ' Similarity : ', sim_score)
     
-    # def query(self, query_terms, k):
-    #function for exact top K retrieval using cosine similarity
-    #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
-    
-    # def print_dict(self):
-    #function to print the terms and posting list in the index
+    def print_dict(self):
+        #function to print the terms and posting list in the index
+        print(self.index)
 
-    # def print_doc_list(self):
-    # function to print the documents and their document id
+    def print_doc_list(self):
+        # function to print the documents and their document id
+        print(self.doc_list)
