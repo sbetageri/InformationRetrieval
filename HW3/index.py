@@ -521,6 +521,23 @@ class index:
         print('Index built')
 
     def rocchio(self, query_terms, pos_feedback, neg_feedback, alpha=1, beta=0.75, gamma=0.15):
+        '''Perform Rocchio Query Correction. 
+        
+        :param query_terms: Query Terms
+        :type query_terms: List of terms
+        :param pos_feedback: List of document IDs
+        :type pos_feedback: List of ints
+        :param neg_feedback: List of document IDs
+        :type neg_feedback: List of ints
+        :param alpha: Alpha co-ef, defaults to 1
+        :type alpha: int, optional
+        :param beta: Beta co-ef, defaults to 0.75
+        :type beta: float, optional
+        :param gamma: Gamma co-ef, defaults to 0.15
+        :type gamma: float, optional
+        :return: Modified query terms and modified query vector
+        :rtype: List of terms, list of floats
+        '''
         # function to implement rocchio algorithm
         # pos_feedback - documents deemed to be relevant by the user
         # neg_feedback - documents deemed to be non-relevant by the user
@@ -534,6 +551,7 @@ class index:
     def query(self, query_terms, k):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
+        query_terms = self.clean_query(query_terms)
         q_vec, q_mag = self.build_query_vector(query_terms)
         docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
         ranked_sim = self.rank_docs(docs_sim)
