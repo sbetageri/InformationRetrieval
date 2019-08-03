@@ -550,6 +550,51 @@ class index:
         q_mod_terms = self.rebuild_query_terms(q_modified)
         return q_mod_terms, q_modified
     
+    def get_doc_ids(self, ranked_sim):
+        '''Get the doc IDs from ranked similarity
+        
+        :param ranked_sim: Ranked Similarity Scores
+        :type ranked_sim: List of tuples: (DocId, Score)
+        :return: List of Doc IDs
+        :rtype: List of Floats
+        '''
+        doc_ids = []
+        for i in ranked_sim:
+            doc_ids.append(i[0])
+        return doc_ids
+    
+    def get_exp_values(self, rel_docs, q_res, k):
+        '''Calc Precision, Recall and Avg Precision of query results
+        
+        :param rel_docs: Relevant Documents
+        :type rel_docs: List of DocIds(int)
+        :param q_res: Query Returned Documents
+        :type q_res: List of DocIds(int)
+        :param k: Rank value 
+        :type k: Int
+        :return: Precision, Recall and Ap
+        :rtype: Tuple of Floats
+        '''
+        r_docs = set(rel_docs)
+        ap = 0
+        tp = 0
+        fp = 0
+        fn = 0
+        for i, val in enumerate(q_res):
+            if val in r_docs:
+                tp += 1
+                r_docs.remove(val)
+                if i < k:
+                    ap += tp / (i + 1)
+            elif val not in r_docs:
+                fp += 1
+                
+        fn = len(r_docs)
+        
+        precision = tp / (tp + fp)
+        recall = tp / (tp + fn)
+        return precision, recall, ap
+    
     def query(self, query_terms, k, print_flag=True):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
@@ -564,25 +609,60 @@ class index:
                 print('Document : ', doc_name, ' Similarity : ', sim_score)
         return ranked_sim
     
-    def rocchio_query(self, query, k, r_docs):
-        ranked_terms = self.query(query, k, print_flag=False)
-        for i, doc in enumerate(ranked_terms):
-            if i < k:
-                print('Doc ID : ', doc[0])
+    def rocchio_query(self, query, k, r_docs, print_flag=True):
+        ranked_sim = self.query(query, k, print_flag=False)
+        if print_flag:
+            for i, doc in enumerate(ranked_sim):
+                if i < k:
+                    print('Doc ID : ', doc[0])
+        
+        q_docs = self.get_doc_ids(ranked_sim)
         
         r_set = set(r_docs)
         ir_docs = []
-        for i in ranked_terms:
+        for i in ranked_sim:
             if i[0] not in ir_docs:
                 ir_docs.append(i[0])
 
-        print('Corrected Query Results')
         q_mod_terms, q_mod = self.rocchio(query, r_docs, ir_docs)
-        new_ranked_docs = self.query(' '.join(q_mod_terms), k, print_flag=True)
-        for i, doc in enumerate(new_ranked_docs):
-            if i < k:
-                print('Doc ID : ', doc[0])
+        q_mod_terms = ' '.join(q_mod_terms)
+        new_ranked_docs = self.query(q_mod_terms, k, print_flag=True)
         
+        if print_flag:
+            print('Corrected Query Results')
+            for i, doc in enumerate(new_ranked_docs):
+                if i < k:
+                    print('Doc ID : ', doc[0])
+    
+    def experiment(self, query, k, r_docs):
+        precision = []
+        recall = []
+        mp = []
+        for i in range(5):
+            ranked_sim = self.query(query, k, print_flag=False)
+            doc_ids = self.get_doc_ids(ranked_sim)
+            p, r, m = self.get_exp_values(r_docs, doc_ids, k)
+            precision.append(p)
+            recall.append(r)
+            mp.append(m / (i + 1))
+            
+            ir_docs = []
+            for i in ranked_sim:
+                if i[0] not in ir_docs:
+                    ir_docs.append(i[0])
+            
+            q_mod_terms, q_mod_vec = self.rocchio(query, r_docs, ir_docs)
+            query = ' '.join(q_mod_terms)
+            
+            # get ranked docs for query
+            # calc prec, recall and mp for query
+            # perform rocchio query correction
+            # get ranked docs
+            # 
+        print(precision)
+        print(recall)
+        print(mp)
+
     
     def print_dict(self):
         #function to print the terms and posting list in the index
@@ -594,4 +674,4 @@ class index:
 
 if __name__ == '__main__':
     ir = index()
-    ir.rocchio_query('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 10, [20, 71,131,148,182,207,261,272,325])
+    ir.experiment('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 10, [20, 71,131,148,182,207,261,272,325])
