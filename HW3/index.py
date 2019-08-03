@@ -210,6 +210,8 @@ class index:
         
         magnitude = 0
         for term in set(query_terms):
+            if term not in self.term_idx_map:
+                continue
             idx = self.term_idx_map[term]
             idf = self._idf(term)
             tf = query_vec[idx]
@@ -449,11 +451,11 @@ class index:
         :type op: Constant int
         '''
         if len(doc_ids) == 1:
-            return self.doc_vec[doc_ids[0]]
+            return self.doc_vec[doc_ids[0]][self.DOC_VEC]
         
-        s_vec = copy(self.doc_vec[doc_ids[0]])
+        s_vec = copy(self.doc_vec[doc_ids[0]][self.DOC_VEC])
         for doc_id in doc_ids[1:]:
-            s_vec = self._op_vec(s_vec, self.doc_vec[doc_id], op)
+            s_vec = self._op_vec(s_vec, self.doc_vec[doc_id][self.DOC_VEC], op)
         return s_vec
         
     def _rocchio(self, q_vec, pos_feedback, neg_feedback, alpha, beta, gamma):
@@ -484,7 +486,7 @@ class index:
         p3 = self.mult(gamma, p3)
         
         q_m = self._op_vec(p1, p2, self.ADD_OP)
-        q_m = self._op_vec(q_m, p3)
+        q_m = self._op_vec(q_m, p3, self.SUB_OP)
         return q_m
     
     def rebuild_query_terms(self, query_vec):
@@ -548,17 +550,39 @@ class index:
         q_mod_terms = self.rebuild_query_terms(q_modified)
         return q_mod_terms, q_modified
     
-    def query(self, query_terms, k):
+    def query(self, query_terms, k, print_flag=True):
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
         query_terms = self.clean_query(query_terms)
         q_vec, q_mag = self.build_query_vector(query_terms)
         docs_sim = self.calc_sim_docs(q_vec, q_mag, self.doc_vec)
-        ranked_sim = self.rank_docs(docs_sim)
-        for i in range(k):
-            doc_id, sim_score = ranked_sim[i]
-            doc_name = self.doc_list[doc_id]
-            print('Document : ', doc_name, ' Similarity : ', sim_score)
+        ranked_sim = self.rank_docs(docs_sim)[:k]
+        if print_flag:
+            for i in range(k):
+                doc_id, sim_score = ranked_sim[i]
+                doc_name = self.doc_list[doc_id]
+                print('Document : ', doc_name, ' Similarity : ', sim_score)
+        return ranked_sim
+    
+    def rocchio_query(self, query, k, r_docs):
+        ranked_terms = self.query(query, k, print_flag=False)
+        for i, doc in enumerate(ranked_terms):
+            if i < k:
+                print('Doc ID : ', doc[0])
+        
+        r_set = set(r_docs)
+        ir_docs = []
+        for i in ranked_terms:
+            if i[0] not in ir_docs:
+                ir_docs.append(i[0])
+
+        print('Corrected Query Results')
+        q_mod_terms, q_mod = self.rocchio(query, r_docs, ir_docs)
+        new_ranked_docs = self.query(' '.join(q_mod_terms), k, print_flag=True)
+        for i, doc in enumerate(new_ranked_docs):
+            if i < k:
+                print('Doc ID : ', doc[0])
+        
     
     def print_dict(self):
         #function to print the terms and posting list in the index
@@ -567,3 +591,7 @@ class index:
     def print_doc_list(self):
         # function to print the documents and their document id
         print(self.doc_list)
+
+if __name__ == '__main__':
+    ir = index()
+    ir.rocchio_query('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 10, [20, 71,131,148,182,207,261,272,325])
