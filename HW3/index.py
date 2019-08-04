@@ -49,11 +49,29 @@ class index:
         print('Vector Space Built')
     
     def rank_docs(self, docs_sim):
+        '''Rank documents based on decreasing similarity.
+        
+        :param docs_sim: Similarity scores of documents
+        :type docs_sim: List of Tuples((doc_id, sim), )
+        :return: Sorted list of documents
+        :rtype: List of Tuples((doc_id, sim), )
+        '''
         ranked = sorted(docs_sim, key=lambda val : val[1])
         ranked.reverse()
         return ranked
     
     def calc_sim_docs(self, q_vec, q_mag, doc_vec):
+        '''Calculates the similarity of a document and a vector
+        
+        :param q_vec: Query Vector
+        :type q_vec: List of floats
+        :param q_mag: Query Magnitude
+        :type q_mag: Float
+        :param doc_vec: Document Vector
+        :type doc_vec: List of floats
+        :return: Similarity score
+        :rtype: Float
+        '''
         similarity = []
         for doc in doc_vec:
             d_mag = doc_vec[doc][self.DOC_MAG]
@@ -598,6 +616,17 @@ class index:
         return precision, recall, ap
     
     def query(self, query_terms, k, print_flag=True):
+        '''Performs exact top-k search
+        
+        :param query_terms: Terms of the query
+        :type query_terms: String of query terms
+        :param k: Number of top k documents to be returned to user
+        :type k: Int
+        :param print_flag: Flag to print intermediate results, defaults to True
+        :type print_flag: Boolean, optional
+        :return: Ranked similarity score of documents
+        :rtype: List of Tuples((doc_id, sim))
+        '''
         #function for exact top K retrieval (method 1)
         #Returns at the minimum the document names of the top K documents ordered in decreasing order of similarity score
         query_terms = self.clean_query(query_terms)
@@ -612,6 +641,17 @@ class index:
         return ranked_sim
     
     def rocchio_query(self, query, k, r_docs, print_flag=True):
+        '''Performs Rocchio query. Wrapper over internal _rocchio
+        
+        :param query: Query terms
+        :type query: String
+        :param k: Top K count
+        :type k: Int
+        :param r_docs: Relevant doc IDs
+        :type r_docs: List of int(doc_id)
+        :param print_flag: Flag to print intermediate results, defaults to True
+        :type print_flag: bool, optional
+        '''
         ranked_sim = self.query(query, k, print_flag=False)
         if print_flag:
             for i, doc in enumerate(ranked_sim):
@@ -661,6 +701,17 @@ class index:
         plt.show()
     
     def experiment(self, query, k, r_docs):
+        '''Performs 5 iterations of rocchio correction
+        
+        :param query: Query 
+        :type query: String
+        :param k: Top-K
+        :type k: Int
+        :param r_docs: Relevant Documents
+        :type r_docs: List of int(doc_id)
+        :return: Precision, Recall and MAP for all experiments
+        :rtype: 3 Lists of floats
+        '''
         precision = []
         recall = []
         mp = []
@@ -688,6 +739,13 @@ class index:
         return precision, recall, mp, query
     
     def top_3_feedback(self, query):
+        '''Top 3 Pseudo Relevant feedback experiments
+        
+        :param query: Query
+        :type query: String
+        :return: Precision, Recall and MAP for all experiments
+        :rtype: 3 Lists of floats
+        '''
         k = 10
         precision, recall, mp = [], [], []
         for i in range(5):
@@ -729,4 +787,4 @@ if __name__ == '__main__':
     p2, r2, mp2, qm2 = ir.experiment(query, 5, [99, 100, 195, 267, 344])
     
     ## Query 40
-p3, r3, mp3, qm3 = ir.experiment('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 8, [20, 71,131,148,182,207,261,272,325])
+    p3, r3, mp3, qm3 = ir.experiment('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 8, [20, 71,131,148,182,207,261,272,325])
