@@ -6,6 +6,8 @@ import time
 import string
 import math
 
+import matplotlib.pyplot as plt
+
 from copy import copy
 #import other modules as needed
 
@@ -399,7 +401,6 @@ class index:
         :return: Cleaned query terms
         :rtype: List of strings
         '''
-        print('Query Terms')
         q_terms = query.split(' ')
         q = []
         for term in q_terms:
@@ -590,6 +591,7 @@ class index:
                 fp += 1
                 
         fn = len(r_docs)
+        ap = ap / len(rel_docs)
         
         precision = tp / (tp + fp)
         recall = tp / (tp + fn)
@@ -634,6 +636,30 @@ class index:
                 if i < k:
                     print('Doc ID : ', doc[0])
     
+    def _plot(self, xaxis, p1, p2, p3):
+        '''Plot the results of three experimental results
+        
+        :param xaxis: Xaxis values
+        :type xaxis: List of ints
+        :param p1: Result of query 1
+        :type p1: List of floats
+        :param p2: Result of query 2
+        :type p2: List of floats
+        :param p3: Result of query 3
+        :type p3: List of floats
+        '''
+        plt.plot(xaxis, p1)
+        plt.plot(xaxis, p2)
+        plt.plot(xaxis, p3)
+        plt.legend(['Query 1', 'Query 2', 'Query 3'])
+        plt.show()
+    
+    def plot_experiment(self, precision, recall, mp):
+        x_axis = list(range(len(precision)))
+        plt.plot(x_axis, precision)
+        plt.xlabel('Rocchio Iteration')
+        plt.show()
+    
     def experiment(self, query, k, r_docs):
         precision = []
         recall = []
@@ -647,9 +673,9 @@ class index:
             mp.append(m / (i + 1))
             
             ir_docs = []
-            for i in ranked_sim:
-                if i[0] not in ir_docs:
-                    ir_docs.append(i[0])
+            for i in doc_ids:
+                if i not in r_docs:
+                    ir_docs.append(i)
             
             q_mod_terms, q_mod_vec = self.rocchio(query, r_docs, ir_docs)
             query = ' '.join(q_mod_terms)
@@ -659,10 +685,30 @@ class index:
             # perform rocchio query correction
             # get ranked docs
             # 
-        print(precision)
-        print(recall)
-        print(mp)
-
+        return precision, recall, mp, query
+    
+    def top_3_feedback(self, query):
+        k = 10
+        precision, recall, mp = [], [], []
+        for i in range(5):
+            ranked_sim = self.query(query, k, print_flag=False)
+            doc_ids = self.get_doc_ids(ranked_sim)
+            
+            # First three documents are relevant
+            r_docs = doc_ids[:3]
+            p, r, m = self.get_exp_values(r_docs, doc_ids, k)
+            precision.append(p)
+            recall.append(r)
+            mp.append(m / (i + 1))
+            
+            ir_docs = []
+            for i in doc_ids:
+                if i not in r_docs:
+                    ir_docs.append(i)
+            
+            q_mod_terms, q_mod_vec = self.rocchio(query, r_docs, ir_docs)
+            query = ' '.join(q_mod_terms)
+        return precision, recall, mp, query
     
     def print_dict(self):
         #function to print the terms and posting list in the index
@@ -674,4 +720,13 @@ class index:
 
 if __name__ == '__main__':
     ir = index()
-    ir.experiment('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 10, [20, 71,131,148,182,207,261,272,325])
+    
+    ## Query 40
+    p1, r1, mp1, qm1 = ir.experiment('PERSONS INVOLVED IN THE VIET NAM COUP', 5, [359, 370, 385, 397, 421])
+    
+    ## Query 15
+    query = 'AGREEMENT BY THE UNITED ARAB REPUBLIC AND SAUDI ARABIA TO WITHDRAW THEIR FORCES FROM YEMEN, WHICH INVOLVES OBSERVERS FROM THE UNITED NATIONS EXPEDITIONARY FORCE BEING SENT TO YEMEN .'
+    p2, r2, mp2, qm2 = ir.experiment(query, 5, [99, 100, 195, 267, 344])
+    
+    ## Query 40
+p3, r3, mp3, qm3 = ir.experiment('RESULTS OF THE POLITICAL POLLS IN BRITAIN REGARDING WHICH PARTY IS IN THE LEAD, THE LABOR PARTY OR THE CONSERVATIVES.', 8, [20, 71,131,148,182,207,261,272,325])
